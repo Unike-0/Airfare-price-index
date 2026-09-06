@@ -1,4 +1,4 @@
-# APIx: Airfare Price Index Platform (v2)
+# APIx: Airfare Price Index Platform
 
 APIx is a dual-interface airfare tracking platform designed both for everyday Indian consumers and regulatory macro-economic institutions (NSO, MoSPI, RBI). It provides real-time, daily airfare price monitoring across Indian domestic flight sectors.
 
