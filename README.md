@@ -35,32 +35,7 @@ APIx is a dual-interface airfare tracking platform designed both for everyday In
 ---
 
 ## 🏗️ SYSTEM ARCHITECTURE OVERVIEW
-
-```mermaid
-graph TD
-    subgraph Data Scraping & Simulation
-        A[Playwright Live Scraper Engine]
-        B[Scheduled Live Data Simulator Engine]
-    end
-
-    subgraph Backend Container (FastAPI)
-        C[Cleaning Pipeline: IQR Outliers & Deduplication]
-        D[Laspeyres Price Index Builder]
-        E[Innovation Feature Endpoints & Chatbot API]
-        F[(PostgreSQL / SQLite Database)]
-    end
-
-    subgraph Frontend Container (React + Vite)
-        G[Public Consumer View (Default)]
-        H[Advanced Analyst View (Toggleable)]
-    end
-
-    A -->|Raw Quotes| F
-    B -->|Realistic Fares| F
-    F --> C --> D --> F
-    G -->|REST / WebSockets| E
-    H -->|REST / WebSockets| E
-```
+![APIx Architecture](apix-architecture.png)
 
 ---
 
