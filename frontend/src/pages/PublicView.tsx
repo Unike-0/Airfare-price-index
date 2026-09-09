@@ -165,7 +165,7 @@ export default function PublicView() {
   const priceDiffPct = Math.abs(Math.round((scoreVal - 100) * 10) / 10);
 
   return (
-    <div className="space-y-12 max-w-7xl mx-auto px-4 py-8">
+    <div className="space-y-10 md:space-y-12 w-full px-4 sm:px-6 py-6 md:py-8">
       {/* 1. HERO EXPLAINER & MAIN PRICE SCORE */}
       <section className="relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl backdrop-blur-xl">
         <div className="absolute top-0 right-0 -mt-12 -mr-12 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>

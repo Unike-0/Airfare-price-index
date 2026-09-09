@@ -18,7 +18,9 @@ import {
   Palette,
   SlidersHorizontal,
   Eye,
-  Activity
+  Activity,
+  Menu,
+  X
 } from "lucide-react";
 
 // Page imports
@@ -52,6 +54,7 @@ export default function App() {
   const [viewMode, setViewMode] = useState<ViewMode>("public"); // Default: Public View
   const [publicTab, setPublicTab] = useState<PublicTab>("home");
   const [activeTab, setActiveTab] = useState<AdvancedTab>("dashboard");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState<"dark" | "premium">(() => {
     const saved = localStorage.getItem("theme");
     return (saved === "dark" || saved === "premium") ? saved : "dark";
@@ -91,6 +94,16 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("dataTheme", dataTheme);
   }, [dataTheme]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const wsScheme = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -253,7 +266,7 @@ export default function App() {
         </div>
         <button
           onClick={() => setShowLoginModal(true)}
-          className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-6 py-2.5 rounded-xl text-sm transition"
+          className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-6 py-3 min-h-[44px] rounded-xl text-sm transition"
         >
           Sign In as {roleName}
         </button>
@@ -303,35 +316,36 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-amber-500 selection:text-slate-950">
       {/* Top Header Navigation */}
-      <header className="sticky top-0 z-40 border-b bg-slate-900/90 backdrop-blur-md border-slate-800">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-40 border-b bg-slate-900/95 backdrop-blur-md border-slate-800">
+        <div className="w-full flex h-16 items-center justify-between px-4 sm:px-6">
           
           {/* Logo & Brand Title */}
           <div
-            className="flex items-center gap-3 cursor-pointer"
+            className="flex items-center gap-3 cursor-pointer select-none py-1 min-h-[44px]"
             onClick={() => {
               setViewMode("public");
               setPublicTab("home");
+              setMobileMenuOpen(false);
             }}
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-slate-950 font-black shadow-lg shadow-amber-500/20">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-slate-950 font-black shadow-lg shadow-amber-500/20">
               ✈️
             </div>
-            <div>
+            <div className="flex items-center gap-2">
               <span className="text-xl font-black tracking-tight text-white flex items-center gap-2">
-                APIx <span className="text-xs px-2 py-0.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold rounded-full">Airfare Index</span>
+                APIx <span className="text-xs px-2 py-0.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-bold rounded-full whitespace-nowrap">Airfare Index</span>
               </span>
             </div>
           </div>
 
-          {/* Center Navigation for Public Mode */}
+          {/* Center Navigation for Public Mode (Desktop) */}
           {viewMode === "public" && (
-            <nav className="hidden md:flex items-center space-x-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
+            <nav className="hidden md:flex items-center space-x-1.5 lg:space-x-2 bg-slate-950 p-1.5 rounded-2xl border border-slate-800">
               {publicNavItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => setPublicTab(item.id as PublicTab)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+                  className={`flex items-center space-x-2 px-3.5 lg:px-4 py-2 min-h-[40px] rounded-xl text-xs font-bold transition-all ${
                     publicTab === item.id
                       ? "bg-amber-500 text-slate-950 shadow-md"
                       : "text-slate-400 hover:text-white hover:bg-slate-900"
@@ -344,21 +358,21 @@ export default function App() {
             </nav>
           )}
 
-          {/* Top Right Controls & Advanced Mode Toggle */}
-          <div className="flex items-center gap-3">
+          {/* Top Right Controls (Desktop) */}
+          <div className="hidden md:flex items-center gap-3">
             {/* Pulsing Live Badge */}
-            <div className="hidden sm:flex items-center space-x-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs font-bold text-emerald-400">
+            <div className="flex items-center space-x-1.5 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs font-bold text-emerald-400">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
               <span>LIVE</span>
             </div>
 
-            {/* View Mode Toggle (OFF by default) */}
+            {/* View Mode Toggle */}
             <button
               onClick={() => setViewMode(viewMode === "public" ? "advanced" : "public")}
-              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border ${
+              className={`flex items-center space-x-2 px-3.5 py-2 min-h-[40px] rounded-xl text-xs font-bold transition-all border ${
                 viewMode === "advanced"
                   ? "bg-amber-500 text-slate-950 border-amber-400 shadow-lg shadow-amber-500/20"
-                  : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700"
+                  : "bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700 hover:text-white"
               }`}
             >
               {viewMode === "advanced" ? (
@@ -378,35 +392,179 @@ export default function App() {
             {user ? (
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-rose-500/30 text-rose-400 text-xs font-bold rounded-xl hover:bg-rose-950/20 transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] border border-rose-500/30 text-rose-400 text-xs font-bold rounded-xl hover:bg-rose-950/20 transition-all"
               >
                 <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Logout</span>
+                <span>Logout</span>
               </button>
             ) : (
               <button
                 onClick={() => setShowLoginModal(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-950 hover:bg-slate-800 border border-slate-800 text-white text-xs font-bold rounded-xl transition-all"
+                className="flex items-center gap-1.5 px-3.5 py-2 min-h-[40px] bg-slate-950 hover:bg-slate-800 border border-slate-800 text-white text-xs font-bold rounded-xl transition-all"
               >
                 <LogIn className="w-3.5 h-3.5 text-amber-400" />
                 <span>Sign In</span>
               </button>
             )}
           </div>
+
+          {/* Mobile Right Controls: Hamburger Menu Button */}
+          <div className="flex md:hidden items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
+              className="min-w-[44px] min-h-[44px] flex items-center justify-center p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all cursor-pointer"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5 text-amber-400" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Slide-down Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-slate-800 bg-slate-900/98 backdrop-blur-xl px-4 py-4 space-y-4 shadow-2xl transition-all duration-200">
+            {/* Top Status & Mode Row */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center space-x-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-xs font-bold text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>LIVE FEED</span>
+              </div>
+              <span className="text-xs font-semibold text-slate-400 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
+                {viewMode === "public" ? "Consumer View" : "Analyst View"}
+              </span>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="space-y-2">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                {viewMode === "public" ? "Consumer Pages" : "Analyst Pages"}
+              </div>
+              {viewMode === "public" ? (
+                <div className="flex flex-col space-y-1.5">
+                  {publicNavItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setPublicTab(item.id as PublicTab);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold min-h-[44px] transition-all text-left w-full ${
+                        publicTab === item.id
+                          ? "bg-amber-500 text-slate-950 shadow-md font-extrabold"
+                          : "text-slate-300 hover:text-white hover:bg-slate-800 bg-slate-950/60 border border-slate-800/80"
+                      }`}
+                    >
+                      <span className={publicTab === item.id ? "text-slate-950" : "text-amber-400"}>
+                        {item.icon}
+                      </span>
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col space-y-1.5 max-h-[280px] overflow-y-auto pr-1">
+                  {advancedNavItems.map((item) => {
+                    const isLocked = item.minRole !== "public" && user?.role !== "admin" && user?.role !== item.minRole;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => {
+                          setActiveTab(item.id as AdvancedTab);
+                          setMobileMenuOpen(false);
+                        }}
+                        className={`flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold min-h-[44px] transition-all text-left w-full ${
+                          activeTab === item.id
+                            ? "bg-amber-500 text-slate-950 shadow-md font-extrabold"
+                            : "text-slate-300 hover:text-white hover:bg-slate-800 bg-slate-950/60 border border-slate-800/80"
+                        }`}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <span className={activeTab === item.id ? "text-slate-950" : "text-amber-400"}>
+                            {item.icon}
+                          </span>
+                          <span>{item.label}</span>
+                        </div>
+                        {isLocked && <Lock className="w-4 h-4 text-slate-500 shrink-0" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Actions & View Switcher */}
+            <div className="pt-3 border-t border-slate-800 space-y-2.5">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1">
+                Workspace & Account
+              </div>
+
+              {/* View Mode Toggle */}
+              <button
+                onClick={() => {
+                  setViewMode(viewMode === "public" ? "advanced" : "public");
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full flex items-center justify-center space-x-2 px-4 py-3 rounded-xl text-sm font-bold min-h-[44px] transition-all border ${
+                  viewMode === "advanced"
+                    ? "bg-amber-500 text-slate-950 border-amber-400 shadow-md"
+                    : "bg-slate-950 text-slate-200 border-slate-700 hover:bg-slate-800 hover:text-white"
+                }`}
+              >
+                {viewMode === "advanced" ? (
+                  <>
+                    <SlidersHorizontal className="w-4 h-4" />
+                    <span>Switch to Consumer View</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-4 h-4 text-amber-400" />
+                    <span>Switch to Advanced Analyst View</span>
+                  </>
+                )}
+              </button>
+
+              {/* Login / Profile */}
+              {user ? (
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center space-x-2 px-4 py-3 border border-rose-500/40 bg-rose-950/20 text-rose-300 text-sm font-bold rounded-xl hover:bg-rose-950/40 min-h-[44px] transition-all"
+                >
+                  <LogOut className="w-4 h-4 text-rose-400" />
+                  <span>Sign Out ({user.username})</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setShowLoginModal(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-slate-950 hover:bg-slate-800 border border-slate-700 text-white text-sm font-bold rounded-xl min-h-[44px] transition-all shadow-sm"
+                >
+                  <LogIn className="w-4 h-4 text-amber-400" />
+                  <span>Sign In to Advanced Panel</span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content Body */}
       {viewMode === "public" ? (
-        <main>
+        <main className="w-full">
           {renderPublicContent()}
           {/* Floating Chatbot Assistant ONLY on Public View */}
           <ChatbotWidget />
         </main>
       ) : (
         /* Advanced Analyst View Layout */
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="mb-6 p-4 bg-slate-900 border border-slate-800 rounded-2xl flex items-center justify-between">
+        <div className="w-full px-4 sm:px-6 py-6 md:py-8">
+          <div className="mb-6 p-4 bg-slate-900 border border-slate-800 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center space-x-3">
               <div className="p-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-xl">
                 <SlidersHorizontal className="w-5 h-5" />
@@ -418,22 +576,22 @@ export default function App() {
             </div>
             <button
               onClick={() => setViewMode("public")}
-              className="text-xs text-amber-400 hover:underline font-bold"
+              className="text-xs text-amber-400 hover:underline font-bold min-h-[36px] flex items-center"
             >
               ← Back to Consumer Public View
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-start">
             {/* Advanced Navigation Sidebar */}
-            <nav className="md:col-span-3 flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible gap-1.5 border border-slate-800 rounded-2xl bg-slate-900 p-2 shadow-sm shrink-0 no-scrollbar">
+            <nav className="md:col-span-3 lg:col-span-3 xl:col-span-2 flex flex-row md:flex-col overflow-x-auto md:overflow-x-visible gap-1.5 border border-slate-800 rounded-2xl bg-slate-900 p-2 shadow-sm shrink-0 no-scrollbar">
               {advancedNavItems.map((item) => {
                 const isLocked = item.minRole !== "public" && user?.role !== "admin" && user?.role !== item.minRole;
                 return (
                   <button
                     key={item.id}
                     onClick={() => setActiveTab(item.id as AdvancedTab)}
-                    className={`flex items-center gap-3 px-4 py-3 text-xs font-bold rounded-xl transition-all ${
+                    className={`flex items-center gap-3 px-4 py-3 min-h-[44px] text-xs font-bold rounded-xl transition-all whitespace-nowrap ${
                       activeTab === item.id
                         ? "bg-amber-500 text-slate-950 font-extrabold shadow-md"
                         : "text-slate-400 hover:bg-slate-800 hover:text-white"
@@ -448,7 +606,7 @@ export default function App() {
             </nav>
 
             {/* Advanced Panel Content */}
-            <main className="md:col-span-9 space-y-6">
+            <main className="md:col-span-9 lg:col-span-9 xl:col-span-10 space-y-6">
               {renderAdvancedContent()}
             </main>
           </div>
@@ -457,11 +615,11 @@ export default function App() {
 
       {/* Footer */}
       <footer className="border-t border-slate-850 bg-slate-900/50 py-6 mt-16 text-center text-xs text-slate-400 font-semibold tracking-wide">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="w-full px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
             APIx Airfare Price Index Platform v2.0 | Real-Time Scraped & Simulated Data Engine
           </div>
-          <div className="flex items-center gap-2 text-[10px] text-slate-400 bg-slate-950 px-3 py-1 rounded-full border border-slate-800">
+          <div className="flex items-center gap-2 text-[10px] text-slate-400 bg-slate-950 px-3 py-1.5 rounded-full border border-slate-800">
             <Database className="w-3 h-3 text-emerald-400" />
             FastAPI + PostgreSQL / SQLite Connected
           </div>

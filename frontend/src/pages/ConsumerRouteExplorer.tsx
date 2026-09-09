@@ -114,7 +114,7 @@ export default function ConsumerRouteExplorer() {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto px-4 py-8">
+    <div className="space-y-8 w-full px-4 sm:px-6 py-6 md:py-8">
       {/* Header Banner */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 md:p-8 backdrop-blur-md">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">

@@ -37,7 +37,7 @@ export default function ConsumerHeatmap() {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto px-4 py-8">
+    <div className="space-y-8 w-full px-4 sm:px-6 py-6 md:py-8">
       {/* Banner */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-6 md:p-8 backdrop-blur-md">
         <div className="inline-flex items-center space-x-2 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-full text-xs font-semibold text-amber-400 mb-3">
