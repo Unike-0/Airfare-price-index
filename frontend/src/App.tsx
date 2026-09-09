@@ -106,10 +106,10 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const wsScheme = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const host = window.location.host;
-    const wsHost = host.includes("5173") ? "localhost:8000" : host;
-    const wsUrl = `${wsScheme}//${wsHost}/api/v1/live/ws`;
+const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const wsScheme = apiUrl.startsWith("https") ? "wss:" : "ws:";
+const wsHost = apiUrl.replace(/^https?:\/\//, "");
+const wsUrl = `${wsScheme}//${wsHost}/api/v1/live/ws`;
 
     let ws: WebSocket;
     let reconnectTimeout: any;
